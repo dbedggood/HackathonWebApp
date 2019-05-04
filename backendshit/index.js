@@ -5,8 +5,15 @@
 //SETUP SHIT
 const express = require('express');
 const pg = require('pg');
+const bodyParser = require('body-parser');
 const app = express();
 require('@google-cloud/debug-agent').start();
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 
 const connectionName =
@@ -39,6 +46,7 @@ if (!pgPool) {
 
 //HELPER FUNCTIONS
 function post_time_to(req, res) {
+  //TODO
   const qry = 'INSERT INTO time_to(att_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
   pgPool.query(qry, [req.query.minutes_to_dest, req.params.event_id, req.params.person_id], (err) => {
     if (err) {
@@ -65,8 +73,6 @@ app.post('/people/:person_id/events/:event_id/time_to', post_time_to);
 
 app.post('/events/:event_id/people', (req, res) => {
   const qry = "INSERT INTO attendees(event_id, person_id) VALUES($1,$2) RETURNING att_id";
-  console.debug(req.params);
-  console.debug(req.query.person_id);
   pgPool.query(qry, [req.params.event_id, req.query.person_id], (err, results) => { ret_results_or_err(err, results, res) })
 })
 
@@ -76,7 +82,12 @@ app.post('/people/', (req, res) => {
 });
 
 app.get('/events/:event_id/people', (req, res) => {
-  const qry = `SELECT minutes_to_dest, age(now(),time_created) as age, people.person_id, person_name FROM time_to INNER JOIN attendees on time_to.att_id = attendees.att_id INNER JOIN people on attendees.person_id = people.person_id;`
+  const qry = `
+  SELECT minutes_to_dest, age(now(),time_created) as age, people.person_id, person_name 
+  FROM time_to 
+    INNER JOIN attendees on time_to.att_id = attendees.att_id 
+    INNER JOIN people on attendees.person_id = people.person_id
+    INNER JOIN events on attendees.event_id = events.event_id;`
   pgPool.query(qry, (err, results) => { ret_results_or_err(err, results, res) });
 })
 
@@ -93,6 +104,16 @@ app.get('/people/:person', (req, res) => {
 app.get('/events/:event_id', (req, res) => {
   const qry = 'SELECT * FROM events WHERE event_id = $1';
   pgPool.query(qry, [req.params.event_id], (err, results) => { ret_results_or_err(err, results, res) });
+});
+
+app.get('/events/', (req, res) => {
+  const qry = 'SELECT * FROM events';
+  pgPool.query(qry, (err, results) => { ret_results_or_err(err, results, res) });
+});
+
+app.post('/events/', (req, res) => {
+  const qry = 'INSERT INTO events(event_name, event_description, lat, long, start_time) VALUES($1,$2,$3,$4, now())';
+  pgPool.query(qry, [req.query.event.event_name, req.query.event.event_description, req.query.event.lat, req.query.event.long], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
 app.get('/now', (req, res) => {
