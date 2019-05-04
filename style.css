@@ -7,6 +7,16 @@ nav {
     background-color: #293250;
 }
 
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #293250;
+    color: white;
+    text-align: center;
+  }
+
 div #map {
     height: 300px;
     width: 100%;
