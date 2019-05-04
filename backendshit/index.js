@@ -89,32 +89,33 @@ app.get('/people/:person', (req, res) => {
   } else {
     qry = 'SELECT * FROM people WHERE person_name like $1';
   }
-  pgPool.query(qry, [req.params.person]);
+  pgPool.query(qry, [req.params.person], ret_results_or_err)
 });
 
 app.get('/events/:event_id', (req, res) => {
   const qry = 'SELECT * FROM events WHERE event_id = $1';
   pgPool.query(qry, [req.params.event_id], ret_results_or_err);
+});
 
-  app.get('/now', (req, res) => {
-    pgPool.query('SELECT NOW() as now', (err, results) => {
-      res.send(JSON.stringify(results.rows));
-    });
+app.get('/now', (req, res) => {
+  pgPool.query('SELECT NOW() as now', (err, results) => {
+    res.send(JSON.stringify(results.rows));
   });
+});
 
-  app.get('test', (req, res) => {
-    res.send('Hello from App Engine!');
-  });
+app.get('test', (req, res) => {
+  res.send('Hello from App Engine!');
+});
 
-  // Listen to the App Engine-specified port, or 8080 otherwise
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}...`);
-  });
-
-
-
-  // [END app]
+// Listen to the App Engine-specified port, or 8080 otherwise
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}...`);
+});
 
 
-  module.exports = app;
+
+// [END app]
+
+
+module.exports = app;
