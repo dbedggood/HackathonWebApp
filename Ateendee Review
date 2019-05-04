@@ -1,0 +1,18 @@
+<!DOCTYPE html> 2
+<html>
+<head>
+<meta charset="UTF-8">
+<title> document2 </title>
+</head>
+<body>
+<h1 id = "Eventreview">
+Attendees'Event Review
+</h1>
+
+<h2>DATE</h2>
+<h3>TIME</h3>
+<h4>LOCATION</h4>
+</body>
+
+</html>
+     
