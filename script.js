@@ -1,3 +1,15 @@
+function getEventDetails(id) {
+    fetch('https://hackathon-239523.appspot.com/events/' + id)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(result) {
+        document.getElementById('eventName').innerText = result[0].event_name
+        document.getElementById('eventDate').innerText = result[0].start_time
+        document.getElementById('eventDetails').innerText = result[0].event_description
+    });
+}
+
 function drawMap(eventLat, eventLng) {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: eventLat, lng: eventLng },
