@@ -63,3 +63,25 @@ async function pull_events() {
         container.append(document.createElement('hr'));
     })
 }
+
+async function submit_event() {
+
+    const eventObj = {
+        event_name: document.querySelector("input#event-name").value,
+        start_time: document.querySelector("input#start-time").value,
+        event_description: document.querySelector("textarea#event-description").value
+    };
+    try {
+        let response = await fetch(`${BASE_URL}/events?event=${btoa(JSON.stringify(eventObj))}`, { method: 'post' });
+        alert('Event Successfully Added!');
+    } catch (err) {
+        console.debug(err);
+        alert("An error occured. Sorry about that.");
+    }
+
+}
+
+window.onload = () => {
+    pull_events();
+    document.querySelector("button#create-event").addEventListener('click', submit_event);
+}
