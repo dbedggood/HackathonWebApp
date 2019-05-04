@@ -55,7 +55,7 @@ async function pull_events() {
     let container = document.querySelector("div#events");
     events.forEach(i => {
         let el = document.createElement('a');
-        el.href = `./events.html?=${i.event_id}`;
+        el.href = `./event.html?event=${i.event_id}`;
         el.className = 'btn btn-info';
         el.innerText = i.event_name;
 
