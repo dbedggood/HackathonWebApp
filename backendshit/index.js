@@ -112,8 +112,9 @@ app.get('/events/', (req, res) => {
 });
 
 app.post('/events/', (req, res) => {
-  const qry = 'INSERT INTO events(event_name, event_description, lat, long, start_time) VALUES($1,$2,$3,$4, now())';
-  pgPool.query(qry, [req.query.event.event_name, req.query.event.event_description, req.query.event.lat, req.query.event.long], (err, results) => { ret_results_or_err(err, results, res) });
+  const qry = 'INSERT INTO events(event_name, event_description, lat, long, start_time) VALUES($1,$2,$3,$4, $5)';
+  let objEvent = atob(req.query.event);
+  pgPool.query(qry, [objEvent.event_name, objEvent.event_description, objEvent.lat, objEvent.long, objEvent.start_time], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
 app.get('/now', (req, res) => {
