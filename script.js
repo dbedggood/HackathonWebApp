@@ -1,5 +1,18 @@
-function getDuration(eventLat, eventLng) {
+function drawMap(eventLat, eventLng) {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: eventLat, lng: eventLng },
+        zoom: 15
+    })
 
+    var eventLocation = { lat: eventLat, lng: eventLng }
+    var marker = new google.maps.Marker({
+        position: eventLocation,
+        map: map,
+        title: 'Event Location'
+    })
+}
+
+function getDuration(eventLat, eventLng) {
     var currentLocation
     var eventLocation = new google.maps.LatLng(eventLat, eventLng)
     if ('geolocation' in navigator) {
@@ -28,21 +41,9 @@ function getDuration(eventLat, eventLng) {
 
     function callback(response, status) {
         if (status == 'OK') {
-            var origins = response.originAddresses
-            var destinations = response.destinationAddresses
-
-            for (var i = 0; i < origins.length; i++) {
-                var results = response.rows[i].elements
-                for (var j = 0; j < results.length; j++) {
-                    var element = results[j]
-                    var duration = element.duration.value
-                    var from = origins[i]
-                    var to = destinations[j]
-                    console.log(
-                        'ETA: ' + duration
-                    )
-                }
-            }
+            var results = response.rows[0].elements[0]
+            var duration = results.duration.value
+            document.getElementById('status').innerText = duration + ' seconds away'
         }
     }
 }
