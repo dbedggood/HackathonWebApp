@@ -37,14 +37,10 @@ if (!pgPool) {
   pgPool = new pg.Pool(pgConfig);
 }
 
-
-
-//ROUTES
-
 //HELPER FUNCTIONS
 function post_time_to(req, res) {
-  const qry = 'INSERT INTO time_to(att_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
-  pgPool.query(qry, [req.query.minutes_to_dest, req.query.event_id, req.query.person_id], (err) => {
+  const qry = 'INSERT INTO time_to(event_id, person_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
+  pgPool.query(qry, [req.query.minutes_to_dest, req.params.event_id, req.params.person_id], (err) => {
     if (err) {
       console.error(err);
       res.status(500).send(err);
@@ -53,7 +49,7 @@ function post_time_to(req, res) {
     }
   })
 }
-function ret_results_or_err(err, results) {
+function ret_results_or_err(err, results, res) {
   if (err) {
     console.error(err);
     res.status(500).send(err);
@@ -62,24 +58,21 @@ function ret_results_or_err(err, results) {
   }
 }
 
+//ROUTES
+
 app.post('/events/:event_id/people/:person_id/time_to', post_time_to);
 app.post('/people/:person_id/events/:event_id/time_to', post_time_to);
 
-app.post('/events/:event_id', (req, res) => {
+app.post('/events/:event_id/people', (req, res) => {
   const qry = "INSERT INTO attendees(event_id, person_id) VALUES($1,$2) RETURNING att_id";
-  pgPool.query(qry, [req.params.event_id, req.query.person_id], ret_results_or_err)
+  console.debug(req.params);
+  console.debug(req.query.person_id);
+  pgPool.query(qry, [req.params.event_id, req.query.person_id], (err, results) => { ret_results_or_err(err, results, res) })
 })
 
 app.post('/people/', (req, res) => {
-  const qry = 'INSERT INTO people(person_name) VALUES($1)'
-  pgPool.query(qry, [req.query.person], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send(err);
-    } else {
-      res.status(201).send("Person created");
-    }
-  });
+  const qry = 'INSERT INTO people(person_name) VALUES($1) RETURNING person_id;'
+  pgPool.query(qry, [req.query.person_id], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
 app.get('/people/:person', (req, res) => {
@@ -89,12 +82,12 @@ app.get('/people/:person', (req, res) => {
   } else {
     qry = 'SELECT * FROM people WHERE person_name like $1';
   }
-  pgPool.query(qry, [req.params.person], ret_results_or_err)
+  pgPool.query(qry, [req.params.person], (err, results) => { ret_results_or_err(err, results, res) })
 });
 
 app.get('/events/:event_id', (req, res) => {
   const qry = 'SELECT * FROM events WHERE event_id = $1';
-  pgPool.query(qry, [req.params.event_id], ret_results_or_err);
+  pgPool.query(qry, [req.params.event_id], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
 app.get('/now', (req, res) => {
