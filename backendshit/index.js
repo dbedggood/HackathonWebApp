@@ -40,9 +40,38 @@ if (!pgPool) {
 
 
 //ROUTES
+
+//HELPER FUNCTIONS
+function post_time_to(req, res) {
+  const qry = 'INSERT INTO time_to(att_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
+  pgPool.query(qry, [req.query.minutes_to_dest, req.query.event_id, req.query.person_id], (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      res.status(201).send("Sent timestamp");
+    }
+  })
+}
+function ret_results_or_err(err, results) {
+  if (err) {
+    console.error(err);
+    res.status(500).send(err);
+  } else {
+    res.send(JSON.stringify(results.rows));
+  }
+}
+
+app.post('/events/:event_id/people/:person_id/time_to', post_time_to);
+app.post('/people/:person_id/events/:event_id/time_to', post_time_to);
+
+app.post('/events/:event_id', (req, res) => {
+  const qry = "INSERT INTO attendees(event_id, person_id) VALUES($1,$2) RETURNING att_id";
+  pgPool.query(qry, [req.params.event_id, req.query.person_id], ret_results_or_err)
+})
+
 app.post('/people/', (req, res) => {
   const qry = 'INSERT INTO people(person_name) VALUES($1)'
-  console.log(req.query);
   pgPool.query(qry, [req.query.person], (err, results) => {
     if (err) {
       console.error(err);
@@ -52,6 +81,7 @@ app.post('/people/', (req, res) => {
     }
   });
 });
+
 app.get('/people/:person', (req, res) => {
   let qry = ''
   if (isFinite(req.params.person)) {
@@ -59,36 +89,32 @@ app.get('/people/:person', (req, res) => {
   } else {
     qry = 'SELECT * FROM people WHERE person_name like $1';
   }
-  console.log(qry);
-  pgPool.query(qry, [req.params.person], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send(err);
-    } else {
+  pgPool.query(qry, [req.params.person]);
+});
+
+app.get('/events/:event_id', (req, res) => {
+  const qry = 'SELECT * FROM events WHERE event_id = $1';
+  pgPool.query(qry, [req.params.event_id], ret_results_or_err);
+
+  app.get('/now', (req, res) => {
+    pgPool.query('SELECT NOW() as now', (err, results) => {
       res.send(JSON.stringify(results.rows));
-    }
+    });
   });
-});
 
-app.get('/now', (req, res) => {
-  pgPool.query('SELECT NOW() as now', (err, results) => {
-    res.send(JSON.stringify(results.rows));
+  app.get('test', (req, res) => {
+    res.send('Hello from App Engine!');
   });
-});
 
-app.get('test', (req, res) => {
-  res.send('Hello from App Engine!');
-});
-
-// Listen to the App Engine-specified port, or 8080 otherwise
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`);
-});
+  // Listen to the App Engine-specified port, or 8080 otherwise
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}...`);
+  });
 
 
 
-// [END app]
+  // [END app]
 
 
-module.exports = app;
+  module.exports = app;
