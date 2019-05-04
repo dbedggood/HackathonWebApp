@@ -39,7 +39,7 @@ if (!pgPool) {
 
 //HELPER FUNCTIONS
 function post_time_to(req, res) {
-  const qry = 'INSERT INTO time_to(event_id, person_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
+  const qry = 'INSERT INTO time_to(att_id, minutes_to_dest,time_created) SELECT att_id , $1, now() FROM attendees WHERE event_id = $2 AND person_id = $3;';
   pgPool.query(qry, [req.query.minutes_to_dest, req.params.event_id, req.params.person_id], (err) => {
     if (err) {
       console.error(err);
@@ -75,6 +75,11 @@ app.post('/people/', (req, res) => {
   pgPool.query(qry, [req.query.person_id], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
+app.get('/events/:event_id/people', (req, res) => {
+  const qry = `SELECT minutes_to_dest, age(now(),time_created) as age, people.person_id, person_name FROM time_to INNER JOIN attendees on time_to.att_id = attendees.att_id INNER JOIN people on attendees.person_id = people.person_id;`
+  pgPool.query(qry, (err, results) => { ret_results_or_err(err, results, res) });
+})
+
 app.get('/people/:person', (req, res) => {
   let qry = ''
   if (isFinite(req.params.person)) {
@@ -82,7 +87,7 @@ app.get('/people/:person', (req, res) => {
   } else {
     qry = 'SELECT * FROM people WHERE person_name like $1';
   }
-  pgPool.query(qry, [req.params.person], (err, results) => { ret_results_or_err(err, results, res) })
+  pgPool.query(qry, [req.params.person], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
 app.get('/events/:event_id', (req, res) => {
