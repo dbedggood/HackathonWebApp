@@ -1,0 +1,10 @@
+h1 {color:black; text-align: left;
+        font-style: italic;
+    }
+
+p{color:black; text-align: left;
+    font-style: oblique;
+}
+body{
+    background-color: orange
+}
