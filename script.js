@@ -10,6 +10,16 @@ function getEventDetails(id) {
     });
 }
 
+function geocodeLocation() {
+    geocoder = new google.maps.Geocoder();
+    var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+        console.log(results[0].geometry.location)
+      }
+    })
+}
+
 function drawMap(eventLat, eventLng) {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: eventLat, lng: eventLng },
