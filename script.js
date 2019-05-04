@@ -1,3 +1,4 @@
+const BASE_URL = 'https://hackathon-239523.appspot.com'
 function drawMap(eventLat, eventLng) {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: eventLat, lng: eventLng },
@@ -46,4 +47,19 @@ function getDuration(eventLat, eventLng) {
             document.getElementById('status').innerText = duration + ' seconds away'
         }
     }
+}
+async function pull_events() {
+    let response = await fetch(BASE_URL + '/events/');
+    let events = await response.json();
+
+    let container = document.querySelector("div#events");
+    events.forEach(i => {
+        let el = document.createElement('a');
+        el.href = `./events.html?=${i.event_id}`;
+        el.className = 'btn btn-info';
+        el.innerText = i.event_name;
+
+        container.append(el);
+        container.append(document.createElement('hr'));
+    })
 }
