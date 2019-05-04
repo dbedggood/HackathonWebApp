@@ -113,7 +113,7 @@ app.get('/events/', (req, res) => {
 
 app.post('/events/', (req, res) => {
   const qry = 'INSERT INTO events(event_name, event_description, lat, long, start_time) VALUES($1,$2,$3,$4, $5)';
-  let objEvent = atob(req.query.event);
+  let objEvent = JSON.parse(Buffer.from(req.query.event, 'base64').toString());
   pgPool.query(qry, [objEvent.event_name, objEvent.event_description, objEvent.lat, objEvent.long, objEvent.start_time], (err, results) => { ret_results_or_err(err, results, res) });
 });
 
