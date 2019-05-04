@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Event Manager</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script src="script.js"></script>
+        <script
+            async
+            defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHqypHymBiJyE01GeR1B9jAN7UWQfXHOM"
+        ></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-nav border-bottom mb-2">
+            <a class="navbar-brand text-light" href="./index.html"
+                ><h1>Community Events</h1></a
+            >
+        </nav>
+
+        <div class="m-3">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-3">
+                        <div class="pr-2">
+                    <h3>Host an Event:</h3>
+                    <form action="/events" method="POST">
+                        <div class="form-group">
+                            <label for="text">Name: </label>
+                            <input type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Date:</label>
+                            <input type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Location:</label>
+                            <input type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Description:</label>
+                            <textarea
+                                type="text"
+                                class="form-control"
+                            ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+                </div>
+                <div class="col-3">
+                    <h3>Attend an Event:</h3>
+                    <hr />
+                    <a href="./event.html" class="btn btn-info">
+                        REPLACE ME WITH AN EVENT
+                    </a>
+                    <hr />
+                    <a href="./event.html" class="btn btn-info">
+                        REPLACE ME WITH AN EVENT
+                    </a>
+                    <hr />
+                    <a href="./event.html" class="btn btn-info">
+                        REPLACE ME WITH AN EVENT
+                    </a>
+                    <hr />
+                    <a href="./event.html" class="btn btn-info">
+                        REPLACE ME WITH AN EVENT
+                    </a>
+                    <hr />
+                    <a href="./event.html" class="btn btn-info">
+                        REPLACE ME WITH AN EVENT
+                    </a>
+                    <hr />
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+    </body>
+</html>
