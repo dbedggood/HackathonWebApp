@@ -83,12 +83,13 @@ app.post('/people/', (req, res) => {
 
 app.get('/events/:event_id/people', (req, res) => {
   const qry = `
-  SELECT minutes_to_dest, age(now(),time_created) as age, people.person_id, person_name 
+  SELECT minutes_to_dest, min(age(now(),time_created)) as age, people.person_id, person_name 
   FROM attendees
     INNER JOIN people on attendees.person_id = people.person_id
     INNER JOIN events on attendees.event_id = events.event_id
     LEFT JOIN time_to on time_to.att_id = attendees.att_id
-    WHERE events.event_id = $1;`
+    WHERE events.event_id = $1
+    GROUP BY people.person_id, person_name, minutes_to_dest;`
   pgPool.query(qry, [req.params.event_id], (err, results) => { ret_results_or_err(err, results, res) });
 })
 
