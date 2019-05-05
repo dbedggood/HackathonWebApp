@@ -34,7 +34,7 @@ function getEventAttendees(id) {
                 if (!i.minutes_to_dest) {
                     el.innerText = i.person_name + ': Not yet left.';
                 } else {
-                    el.innerText = i.person_name + ': ' + i.minutes_to_dest / 60 + ' minutes away.';
+                    el.innerText = i.person_name + ': ' + i.minutes_to_dest + ' minutes away.';
                 }
                 container.append(el);
                 container.append(document.createElement('hr'));
@@ -78,7 +78,7 @@ function getDuration(eventLat, eventLng) {
                 position.coords.longitude
             )
             googleDistance(currentLocation, eventLocation)
-        })
+        }, (err) => { console.error(err) }, { enableHighAccuracy: true })
     } else {
         console.log('geolocation not available')
     }
@@ -89,18 +89,23 @@ function getDuration(eventLat, eventLng) {
             {
                 origins: [start],
                 destinations: [end],
-                travelMode: 'DRIVING'
+                travelMode: 'WALKING'
             },
             callback
         )
     }
 
-    function callback(response, status) {
+    async function callback(response, status) {
         if (status == 'OK') {
             var results = response.rows[0].elements[0]
-            var duration = results.duration.value
-            document.getElementById('status').innerText =
-                duration + ' seconds away'
+            var duration = results.duration.value;
+
+            try {
+                let response = await fetch(`${BASE_URL}/events/${getEventId()}/people/${localStorage.getItem('person_id')}/time_to?minutes_to_dest=${Math.round(duration / 60)}`, { method: 'post' })
+                console.debug('Time-to submitted');
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 }
@@ -132,6 +137,12 @@ async function is_user_in_event(eventid) {
     return !(response_filtered.length === 0);
 }
 
+async function submit_time_to() {
+    let response = await fetch(`${BASE_URL}/events/${getEventId()}`);
+    let e = await response.json();
+
+    getDuration(e[0].lat, e[0].long);
+}
 
 window.onload = async () => {
     check_user();
@@ -141,6 +152,9 @@ window.onload = async () => {
     if (await is_user_in_event(event)) {
         b.innerText = "Attending";
         b.disabled = true;
+        submit_time_to();
+        setInterval(submit_time_to, 30000);
+
     } else {
         b.innerText = "Attend this event!";
         b.disabled = false;
@@ -148,6 +162,7 @@ window.onload = async () => {
             try {
                 let response = await fetch(`${BASE_URL}/events/${event}/people?person_id=${localStorage.getItem('person_id')}`, { method: 'post' })
                 alert("You are now attending this event");
+                location.reload();
             } catch (err) {
                 console.error(err);
                 alert("Unknown error");
