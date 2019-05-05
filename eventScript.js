@@ -18,6 +18,7 @@ function getEventDetails(id) {
                 result[0].start_time
             document.getElementById('eventDetails').innerText =
                 result[0].event_description
+            drawMap(parseFloat(result[0].lat), parseFloat(result[0].long))
         })
 }
 
