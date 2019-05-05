@@ -80,8 +80,18 @@ async function submit_event() {
     }
 
 }
+async function check_user(){
+    if (!localStorage.getItem('person_id')){
+        let person_name = prompt("Hi there - It doesn't look like we've seen you before. Enter your name to continue:");
+        let response = await fetch(`${BASE_URL}/people/?person_id=${person_name}`,{method:'post'})
+        let z = await response.json()
+        localStorage.setItem('person_id',z[0].person_id)
+    }
+}
+
 
 window.onload = () => {
+    check_user();
     pull_events();
     document.querySelector("button#create-event").addEventListener('click', submit_event);
 }
