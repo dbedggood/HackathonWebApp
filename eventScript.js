@@ -134,7 +134,7 @@ window.onload = async () => {
 
     let b = document.querySelector("#attend-but");
     const event = getEventId()
-    if (await is_user_in_event(eventid)) {
+    if (await is_user_in_event(event)) {
         b.innerText = "Attending";
         b.disabled = true;
     } else {
