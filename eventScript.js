@@ -29,8 +29,11 @@ function getEventAttendees(id) {
         .then(function(result) {
             let container = document.querySelector("div#attendees");
             result.forEach(i => {
+            if (!i.minutes_to_dest){
+                return
+            }
             let el = document.createElement('div');
-            el.innerText = i.person_name + ': ' + minutes_to_dest/60 + ' minutes away.';
+            el.innerText = i.person_name + ': ' + i.minutes_to_dest/60 + ' minutes away.';
 
             container.append(el);
             container.append(document.createElement('hr'));
