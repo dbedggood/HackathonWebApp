@@ -8,10 +8,10 @@ function getEventId() {
 
 function getEventDetails(id) {
     fetch(BASE_URL + '/events/' + id)
-        .then(function(response) {
+        .then(function (response) {
             return response.json()
         })
-        .then(function(result) {
+        .then(function (result) {
             document.getElementById('eventName').innerText =
                 result[0].event_name
             document.getElementById('eventDate').innerText =
@@ -23,21 +23,21 @@ function getEventDetails(id) {
 
 function getEventAttendees(id) {
     fetch(BASE_URL + '/events/' + id + '/people')
-        .then(function(response) {
+        .then(function (response) {
             return response.json()
         })
-        .then(function(result) {
+        .then(function (result) {
             let container = document.querySelector("div#attendees");
             result.forEach(i => {
-            if (!i.minutes_to_dest){
-                return
-            }
-            let el = document.createElement('div');
-            el.innerText = i.person_name + ': ' + i.minutes_to_dest/60 + ' minutes away.';
-
-            container.append(el);
-            container.append(document.createElement('hr'));
-    })
+                let el = document.createElement('div');
+                if (!i.minutes_to_dest) {
+                    el.innerText = i.person_name + ': Not yet left.';
+                } else {
+                    el.innerText = i.person_name + ': ' + i.minutes_to_dest / 60 + ' minutes away.';
+                }
+                container.append(el);
+                container.append(document.createElement('hr'));
+            })
 
             console.log(result)
         })
@@ -46,7 +46,7 @@ function getEventAttendees(id) {
 function geocodeLocation() {
     geocoder = new google.maps.Geocoder()
     var address = document.getElementById('address').value
-    geocoder.geocode({ address: address }, function(results, status) {
+    geocoder.geocode({ address: address }, function (results, status) {
         if (status == 'OK') {
             console.log(results[0].geometry.location)
         }
@@ -125,8 +125,8 @@ async function get_people_in_event(eventid) {
 }
 async function is_user_in_event(eventid) {
 
-    const response = get_people_in_event(eventid);
-    const response_filtered = Array.from(response).filter((i) => { return i.person_id === localStorage.getItem('person_id') })
+    const response = await get_people_in_event(eventid);
+    const response_filtered = Array.from(response).filter((i) => { return i.person_id == localStorage.getItem('person_id') })
 
     return !(response_filtered.length === 0);
 }
