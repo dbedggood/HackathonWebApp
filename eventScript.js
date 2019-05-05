@@ -89,18 +89,23 @@ function getDuration(eventLat, eventLng) {
             {
                 origins: [start],
                 destinations: [end],
-                travelMode: 'DRIVING'
+                travelMode: 'WALKING'
             },
             callback
         )
     }
 
-    function callback(response, status) {
+    async function callback(response, status) {
         if (status == 'OK') {
             var results = response.rows[0].elements[0]
-            var duration = results.duration.value
-            document.getElementById('status').innerText =
-                duration + ' seconds away'
+            var duration = results.duration.value;
+
+            try {
+                let response = await fetch(`${BASE_URL}/events/${getEventId()}/people/${localStorage.getItem('person_id')}/time_to?minutes_to_dest=${Math.round(duration / 60)}`, { method: 'post' })
+                console.debug('Time-to submitted');
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 }
@@ -132,13 +137,11 @@ async function is_user_in_event(eventid) {
     return !(response_filtered.length === 0);
 }
 
-function submit_time_to(event) {
-    try {
-        let response = await fetch(`${BASE_URL}+/events/${event}/people/${localStorage.getItem('person_id')}/time_to?minutes_to_dest=${getDuration()}`, { method: 'post' })
-        console.debug('Time-to submitted');
-    } catch (err) {
-        console.error(err);
-    }
+async function submit_time_to() {
+    let response = await fetch(`${BASE_URL}/events/${getEventId()}`);
+    let e = await response.json();
+
+    getDuration(e[0].lat, e[0].long);
 }
 
 window.onload = async () => {
@@ -150,7 +153,8 @@ window.onload = async () => {
         b.innerText = "Attending";
         b.disabled = true;
         submit_time_to();
-        setInterval(submit_time_to,30000)
+        setInterval(submit_time_to, 30000);
+
     } else {
         b.innerText = "Attend this event!";
         b.disabled = false;
