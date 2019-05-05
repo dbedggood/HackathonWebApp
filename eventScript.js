@@ -34,7 +34,7 @@ function getEventAttendees(id) {
                 if (!i.minutes_to_dest) {
                     el.innerText = i.person_name + ': Not yet left.';
                 } else {
-                    el.innerText = i.person_name + ': ' + i.minutes_to_dest+ ' minutes away.';
+                    el.innerText = i.person_name + ': ' + i.minutes_to_dest + ' minutes away.';
                 }
                 container.append(el);
                 container.append(document.createElement('hr'));
@@ -78,7 +78,7 @@ function getDuration(eventLat, eventLng) {
                 position.coords.longitude
             )
             googleDistance(currentLocation, eventLocation)
-        })
+        }, (err) => { console.error(err) }, { enableHighAccuracy: true })
     } else {
         console.log('geolocation not available')
     }
