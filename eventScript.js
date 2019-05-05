@@ -1,23 +1,23 @@
 const BASE_URL = 'https://hackathon-239523.appspot.com'
 function getEventDetails(id) {
     fetch('https://hackathon-239523.appspot.com/events/' + id)
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(result) {
-        document.getElementById('eventName').innerText = result[0].event_name
-        document.getElementById('eventDate').innerText = result[0].start_time
-        document.getElementById('eventDetails').innerText = result[0].event_description
-    });
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (result) {
+            document.getElementById('eventName').innerText = result[0].event_name
+            document.getElementById('eventDate').innerText = result[0].start_time
+            document.getElementById('eventDetails').innerText = result[0].event_description
+        });
 }
 
 function geocodeLocation() {
     geocoder = new google.maps.Geocoder();
     var address = document.getElementById('address').value;
-    geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == 'OK') {
-        console.log(results[0].geometry.location)
-      }
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == 'OK') {
+            console.log(results[0].geometry.location)
+        }
     })
 }
 
@@ -72,16 +72,52 @@ function getDuration(eventLat, eventLng) {
 }
 
 
-async function check_user(){
-    if (!localStorage.getItem('person_id')){
+async function check_user() {
+    if (!localStorage.getItem('person_id')) {
         let person_name = prompt("Hi there - It doesn't look like we've seen you before. Enter your name to continue:");
-        let response = await fetch(`${BASE_URL}/people/?person_id=${person_name}`,{method:'post'})
+        let response = await fetch(`${BASE_URL}/people/?person_id=${person_name}`, { method: 'post' })
         let z = await response.json()
-        localStorage.setItem('person_id',z[0].person_id)
+        localStorage.setItem('person_id', z[0].person_id)
     }
 }
 
+async function get_people_in_event(eventid) {
+    let response = await fetch(`${BASE_URL}/events/${eventid}/people`)
+    let z = await response.json();
+    return z
+}
+async function is_user_in_event(eventid) {
 
-window.onload = () => {
+    const response = get_people_in_event(eventid);
+    const response_filtered = Array.from(response).filter((i) => { return i.person_id === localStorage.getItem('person_id') })
+
+    return !(response_filtered.length === 0);
+}
+
+
+window.onload = async () => {
     check_user();
+
+    let b = document.querySelector("#attend-but");
+    let urlParams = new URLSearchParams(window.location.search);
+    const eventid = urlParams.get("event");
+
+
+    if (await is_user_in_event(eventid)) {
+        b.innerText = "Attending";
+        b.disabled = true;
+    } else {
+        b.innerText = "Attend this event!";
+        b.disabled = false;
+        b.addEventListener('click', async () => {
+            try {
+                let response = await fetch(`${BASE_URL}/events/${eventid}/people?person_id=${localStorage.getItem('person_id')}`, { method: 'post' })
+                alert("You are now attending this event");
+            } catch (err) {
+                console.error(err);
+                alert("Unknown error");
+            }
+            //let z = await response.json();
+        })
+    }
 }
