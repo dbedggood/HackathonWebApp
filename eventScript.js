@@ -1,5 +1,13 @@
 const BASE_URL = 'https://hackathon-239523.appspot.com'
+
+function getEventId() {
+    const urlParams = new URLSearchParams(window.location.search)
+    const eventID = urlParams.get('event')
+    return eventID
+}
+
 function getEventDetails(id) {
+<<<<<<< HEAD
     fetch('https://hackathon-239523.appspot.com/events/' + id)
         .then(function (response) {
             return response.json();
@@ -15,6 +23,45 @@ function geocodeLocation() {
     geocoder = new google.maps.Geocoder();
     var address = document.getElementById('address').value;
     geocoder.geocode({ 'address': address }, function (results, status) {
+=======
+    fetch(BASE_URL + '/events/' + id)
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(result) {
+            document.getElementById('eventName').innerText =
+                result[0].event_name
+            document.getElementById('eventDate').innerText =
+                result[0].start_time
+            document.getElementById('eventDetails').innerText =
+                result[0].event_description
+        })
+}
+
+function getEventAttendees(id) {
+    fetch(BASE_URL + '/events/' + id + '/people')
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(result) {
+            let container = document.querySelector("div#attendees");
+            result.forEach(i => {
+            let el = document.createElement('div');
+            el.innerText = i.person_name + ': ' + minutes_to_dest/60 + ' minutes away.';
+
+            container.append(el);
+            container.append(document.createElement('hr'));
+    })
+
+            console.log(result)
+        })
+}
+
+function geocodeLocation() {
+    geocoder = new google.maps.Geocoder()
+    var address = document.getElementById('address').value
+    geocoder.geocode({ address: address }, function(results, status) {
+>>>>>>> 052e059883ae115c6f4a3e18be6d3b667ba6df87
         if (status == 'OK') {
             console.log(results[0].geometry.location)
         }
@@ -66,16 +113,21 @@ function getDuration(eventLat, eventLng) {
         if (status == 'OK') {
             var results = response.rows[0].elements[0]
             var duration = results.duration.value
-            document.getElementById('status').innerText = duration + ' seconds away'
+            document.getElementById('status').innerText =
+                duration + ' seconds away'
         }
     }
 }
 
-
 async function check_user() {
     if (!localStorage.getItem('person_id')) {
-        let person_name = prompt("Hi there - It doesn't look like we've seen you before. Enter your name to continue:");
-        let response = await fetch(`${BASE_URL}/people/?person_id=${person_name}`, { method: 'post' })
+        let person_name = prompt(
+            "Hi there - It doesn't look like we've seen you before. Enter your name to continue:"
+        )
+        let response = await fetch(
+            `${BASE_URL}/people/?person_id=${person_name}`,
+            { method: 'post' }
+        )
         let z = await response.json()
         localStorage.setItem('person_id', z[0].person_id)
     }
@@ -99,10 +151,7 @@ window.onload = async () => {
     check_user();
 
     let b = document.querySelector("#attend-but");
-    let urlParams = new URLSearchParams(window.location.search);
-    const eventid = urlParams.get("event");
-
-
+    const event = getEventId()
     if (await is_user_in_event(eventid)) {
         b.innerText = "Attending";
         b.disabled = true;
@@ -119,5 +168,9 @@ window.onload = async () => {
             }
             //let z = await response.json();
         })
+
+
     }
+    getEventDetails(event)
+    getEventAttendees(event)
 }
