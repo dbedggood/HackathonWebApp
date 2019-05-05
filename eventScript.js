@@ -162,6 +162,7 @@ window.onload = async () => {
             try {
                 let response = await fetch(`${BASE_URL}/events/${event}/people?person_id=${localStorage.getItem('person_id')}`, { method: 'post' })
                 alert("You are now attending this event");
+                location.reload();
             } catch (err) {
                 console.error(err);
                 alert("Unknown error");
