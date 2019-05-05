@@ -131,6 +131,14 @@ async function is_user_in_event(eventid) {
     return !(response_filtered.length === 0);
 }
 
+function submit_time_to(event) {
+    try {
+        let response = await fetch(`${BASE_URL}+/events/${event}/people/${localStorage.getItem('person_id')}/time_to?minutes_to_dest=${getDuration()}`, { method: 'post' })
+        console.debug('Time-to submitted');
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 window.onload = async () => {
     check_user();
@@ -140,6 +148,8 @@ window.onload = async () => {
     if (await is_user_in_event(event)) {
         b.innerText = "Attending";
         b.disabled = true;
+        submit_time_to();
+        setInterval(submit_time_to,30000)
     } else {
         b.innerText = "Attend this event!";
         b.disabled = false;
