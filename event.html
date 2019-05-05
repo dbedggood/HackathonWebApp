@@ -1,58 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Event</title>
-        <link
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-            crossorigin="anonymous"
-        />
-        <link
-            href="https://fonts.googleapis.com/css?family=Roboto"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="style.css" type="text/css" />
-        <script src="eventScript.js"></script>
-        <script
-            async
-            defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqRgsLpivuTdIbsSe5SCV6a0RQ6GIxR_8"
-        ></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-nav border-bottom mb-2">
-            <a class="navbar-brand text-light" href="./index.html"
-                ><h1>Community Events</h1></a
-            >
-        </nav>
 
-        <div class="m-3">
-            <div class="row">
-                <div class="col-1 col-sm-2 col-md-3"></div>
-                <div class="col-5 col-sm-4 col-md-3">
-                    <div class="pr-2">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Event</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="eventScript.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqRgsLpivuTdIbsSe5SCV6a0RQ6GIxR_8">
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-nav border-bottom mb-2">
+        <a class="navbar-brand text-light" href="./index.html">
+            <h1>Community Events</h1>
+        </a>
+    </nav>
+
+    <div class="m-3">
+        <div class="row">
+            <div class="col-1 col-sm-2 col-md-3"></div>
+            <div class="col-5 col-sm-4 col-md-3">
+                <div class="pr-2">
                     <h3>Details:</h3>
                     <button onclick="drawMap(-36.848424, 174.762189)" class="btn btn-success">LOAD MAP</button>
 
-<p><b>Name:</b><div id='eventName'></div></p>
-                    <p><b>Date:</b><div id='eventDate'></div></p>
-                    <p><b>Details:</b><div id='eventDetails'></div></p>
-                    <p><b>Location:</b><div id='map'></div></p>
+                    <p><b>Name:</b>
+                        <div id='eventName'></div>
+                    </p>
+                    <p><b>Date:</b>
+                        <div id='eventDate'></div>
+                    </p>
+                    <p><b>Details:</b>
+                        <div id='eventDetails'></div>
+                    </p>
+                    <p><b>Location:</b>
+                        <div id='map'></div>
+                    </p>
                 </div>
             </div>
-                <div class="col-5 col-sm-4 col-md-3" id='attendees'>
-                </div>
-                <div class="col-1 col-sm-2 col-md-3"></div>
+
+            <div class="col-5 col-sm-4 col-md-3" id='attendees'>
+                <button id="attend-but" class="btn btn-success"></button>
             </div>
+            <div class="col-1 col-sm-2 col-md-3"></div>
         </div>
-        <footer class="border-top">
-            <div class="footer-copyright text-center py-3">
-                © 2019 - Daniel Bedggood, Cole Maguire, Joyce Lu & Esther Wang
-            </div>
-        </footer>
-    </body>
+    </div>
+    <footer class="border-top">
+        <div class="footer-copyright text-center py-3">
+            © 2019 - Daniel Bedggood, Cole Maguire, Joyce Lu & Esther Wang
+        </div>
+    </footer>
+</body>
+
 </html>
