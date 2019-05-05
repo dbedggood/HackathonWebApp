@@ -145,7 +145,7 @@ window.onload = async () => {
         b.disabled = false;
         b.addEventListener('click', async () => {
             try {
-                let response = await fetch(`${BASE_URL}/events/${eventid}/people?person_id=${localStorage.getItem('person_id')}`, { method: 'post' })
+                let response = await fetch(`${BASE_URL}/events/${event}/people?person_id=${localStorage.getItem('person_id')}`, { method: 'post' })
                 alert("You are now attending this event");
             } catch (err) {
                 console.error(err);
