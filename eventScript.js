@@ -7,23 +7,6 @@ function getEventId() {
 }
 
 function getEventDetails(id) {
-<<<<<<< HEAD
-    fetch('https://hackathon-239523.appspot.com/events/' + id)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (result) {
-            document.getElementById('eventName').innerText = result[0].event_name
-            document.getElementById('eventDate').innerText = result[0].start_time
-            document.getElementById('eventDetails').innerText = result[0].event_description
-        });
-}
-
-function geocodeLocation() {
-    geocoder = new google.maps.Geocoder();
-    var address = document.getElementById('address').value;
-    geocoder.geocode({ 'address': address }, function (results, status) {
-=======
     fetch(BASE_URL + '/events/' + id)
         .then(function(response) {
             return response.json()
@@ -61,7 +44,6 @@ function geocodeLocation() {
     geocoder = new google.maps.Geocoder()
     var address = document.getElementById('address').value
     geocoder.geocode({ address: address }, function(results, status) {
->>>>>>> 052e059883ae115c6f4a3e18be6d3b667ba6df87
         if (status == 'OK') {
             console.log(results[0].geometry.location)
         }
