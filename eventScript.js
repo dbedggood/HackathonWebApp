@@ -154,9 +154,8 @@ window.onload = async () => {
             }
             //let z = await response.json();
         })
-    document.getElementById('attendees').append(document.createElement('hr'))
-
     }
+    document.getElementById('attendees').append(document.createElement('hr'))
     getEventDetails(event)
     getEventAttendees(event)
 }
