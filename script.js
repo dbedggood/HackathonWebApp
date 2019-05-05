@@ -1,4 +1,26 @@
 const BASE_URL = 'https://hackathon-239523.appspot.com'
+function getEventDetails(id) {
+    fetch('https://hackathon-239523.appspot.com/events/' + id)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(result) {
+        document.getElementById('eventName').innerText = result[0].event_name
+        document.getElementById('eventDate').innerText = result[0].start_time
+        document.getElementById('eventDetails').innerText = result[0].event_description
+    });
+}
+
+function geocodeLocation() {
+    geocoder = new google.maps.Geocoder();
+    var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+        console.log(results[0].geometry.location)
+      }
+    })
+}
+
 function drawMap(eventLat, eventLng) {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: eventLat, lng: eventLng },
