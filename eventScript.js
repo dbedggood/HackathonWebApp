@@ -14,8 +14,8 @@ function getEventDetails(id) {
         .then(function (result) {
             document.getElementById('eventName').innerText =
                 result[0].event_name
-            document.getElementById('eventDate').innerText =
-                result[0].start_time
+            date = new Date(result[0].start_time)
+            document.getElementById('eventDate').innerText = date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
             document.getElementById('eventDetails').innerText =
                 result[0].event_description
             drawMap(parseFloat(result[0].lat), parseFloat(result[0].long))
